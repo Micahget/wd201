@@ -1,0 +1,11 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "I am creating this for the purpose of learning full stack development using node.js. The program is hosted by pupil.first and the coures name is 'Web Development 201'.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mikiyas Getachew",
+  "license": "ISC"
+}
