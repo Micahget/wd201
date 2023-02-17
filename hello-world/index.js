@@ -3,3 +3,4 @@ const hello = () => {
 
 }
 hello();
+console.log("Hellow, Github!");
