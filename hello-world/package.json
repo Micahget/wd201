@@ -4,8 +4,16 @@
   "description": "I am creating this for the purpose of learning full stack development using node.js. The program is hosted by pupil.first and the coures name is 'Web Development 201'.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mikiyas Getachew",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1"
+  }
 }
