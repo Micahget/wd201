@@ -1,0 +1,1 @@
+import { ESLint } from "eslint";//here we install eslint globally so whenever we want to use eslint we can simply import it and use it.
