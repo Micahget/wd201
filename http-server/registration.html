@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+    <title>Document</title>
+    <style>
+        input#dob:invalid:focus{
+            border: 1px solid red;
+        }
+        input#name:invalid:focus{
+            border: 1px solid red;
+        }
+        input#password:invalid:focus{
+            border: 1px solid red;
+        }
+        input#email:invalid:focus{
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+
+        <form id="user-form" class=" w-1/4 mx-auto mt-10">
+            <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <div class="mb-4">
+                    <h1 class="text-2xl font-bold mb-4">Registration Form</h1>
+                </div>
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                    <input type="text" id="name" name="name"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" id="email" name="email"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                    <input type="password" id="password" name="password"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="dob" class="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
+                    <input type="date" id="dob" name="dob"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        required>
+                </div>
+                <div class="mb-4">
+                    <label for="acceptTerms" class="block text-gray-700 text-sm font-bold mb-2"><input type="checkbox"
+                            id="acceptTerms" name="acceptTerms" class="mr-2">Accept Terms & Conditions</label>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+                </div>
+            </div>
+        </form>
+        <div
+            class="relative bg-white px-6 mt-5 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:rounded-lg sm:px-10">
+            <div class="mx-auto">
+                <h2 class="text-3xl text-center font-bold leading-tight">Entries</h2>
+                <div class="divide-y divide-gray-300/50" id="user-entries"></div>
+            </div>
+        </div>
+
+        
+
+        <script src="./index.js"></script>
+
+    </div>
+</body>
+
+</html>
