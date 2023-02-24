@@ -1,5 +1,6 @@
 const http = require("http");
 const fs = require("fs");
+const minimist = require('minimist');
 
 let homeContent = "";
 let projectContent = "";
@@ -18,11 +19,11 @@ fs.readFile("project.html", (err, project) => {
     projectContent = project;
 });
 //here we are reading the registration.html file and storing it in registrationContent variable.
-fs.readFile("registration.html", (err, home) => {
+fs.readFile("registration.html", (err, registration) => {
     if (err) {
         throw err;
     }
-    registrationContent = home;
+    registrationContent = registration;
 });
 /*
 //here we are creating the server and listening to the port 3000
@@ -49,7 +50,6 @@ http.createServer((request, response) => {
 */
 
 //using minimist to accept cli input and using default port 3000 if no port is provided in cli
-const minimist = require('minimist')
 const args = minimist(process.argv.slice(2), {
    default: {
      port: 3000
