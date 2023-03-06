@@ -10,6 +10,13 @@ const todoList = () => {
     const overdue = () => {
         // Write the date check condition here and return the array
         // of overdue items accordingly from the all array.
+        const dateToday = new Date()
+        const today = formattedDate(dateToday)
+        const overdue = all.filter((item) => {
+            return item.dueDate < today
+        }
+        )
+        return overdue
 
     }
 
