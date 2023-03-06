@@ -47,24 +47,30 @@ const todoList = () => {
     const toDisplayableList = (list) => {
         // Format the To-Do list here, and return the output string
         // as per the format given above.
+        const dateToday = new Date()
+        const today = formattedDate(dateToday)
+        const displayableList = list.map((item, index) => {
+            if (item.dueDate === today) {
+                let status = item.completed ? "x" : " "
+                return `[${status}] ${item.title}`
+            } else {
+                let status = item.completed ? "x" : " "
+                return `[${status}] ${item.title} ${item.dueDate}`
 
-        const displayBracket = list.map((item) => {
-            let status = item.completed ? "x" : " "
-            return `[${status}] ${item.title}`
-        }
-        )
-        return displayBracket.join("\n")
+            }
+        })
+        return displayableList.join('\n')
     }
 
-    return {
-        all,
-        add,
-        markAsComplete,
-        overdue,
-        dueToday,
-        dueLater,
-        toDisplayableList
-    };
+return {
+    all,
+    add,
+    markAsComplete,
+    overdue,
+    dueToday,
+    dueLater,
+    toDisplayableList
+};
 };
 
 // ####################################### #
@@ -74,16 +80,16 @@ const todoList = () => {
 const todos = todoList();
 
 const formattedDate = d => {
-  return d.toISOString().split("T")[0]
+    return d.toISOString().split("T")[0]
 }
 
 var dateToday = new Date()
 const today = formattedDate(dateToday)
 const yesterday = formattedDate(
-  new Date(new Date().setDate(dateToday.getDate() - 1))
+    new Date(new Date().setDate(dateToday.getDate() - 1))
 )
 const tomorrow = formattedDate(
-  new Date(new Date().setDate(dateToday.getDate() + 1))
+    new Date(new Date().setDate(dateToday.getDate() + 1))
 )
 
 todos.add({ title: 'Submit assignment', dueDate: yesterday, completed: false })
