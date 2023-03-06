@@ -62,15 +62,15 @@ const todoList = () => {
         return displayableList.join('\n')
     }
 
-return {
-    all,
-    add,
-    markAsComplete,
-    overdue,
-    dueToday,
-    dueLater,
-    toDisplayableList
-};
+    return {
+        all,
+        add,
+        markAsComplete,
+        overdue,
+        dueToday,
+        dueLater,
+        toDisplayableList
+    };
 };
 
 // ####################################### #
