@@ -47,6 +47,13 @@ const todoList = () => {
     const toDisplayableList = (list) => {
         // Format the To-Do list here, and return the output string
         // as per the format given above.
+
+        const displayBracket = list.map((item) => {
+            let status = item.completed ? "x" : " "
+            return `[${status}] ${item.title}`
+        }
+        )
+        return displayBracket.join("\n")
     }
 
     return {
