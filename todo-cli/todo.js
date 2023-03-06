@@ -35,6 +35,13 @@ const todoList = () => {
     const dueLater = () => {
         // Write the date check condition here and return the array
         // of todo items that are due later accordingly.
+        const dateToday = new Date()
+        const today = formattedDate(dateToday)
+        const dueLater = all.filter((item) => {
+            return item.dueDate > today
+        }
+        )
+        return dueLater
     }
 
     const toDisplayableList = (list) => {
