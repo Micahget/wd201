@@ -23,6 +23,13 @@ const todoList = () => {
     const dueToday = () => {
         // Write the date check condition here and return the array
         // of todo items that are due today accordingly.
+        const dateToday = new Date()
+        const today = formattedDate(dateToday)
+        const dueToday = all.filter((item) => {
+            return item.dueDate === today
+        }
+        )
+        return dueToday
     }
 
     const dueLater = () => {
