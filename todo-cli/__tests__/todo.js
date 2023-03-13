@@ -41,4 +41,11 @@ describe("todoList test suite", () => {
     });
     expect(dueToday.length).toBe(2);
   });
+  // duelater
+  test("Check dueLater", () => {
+    const dueLater = all.filter((item) => {
+      return item.dueDate > new Date().toISOString().slice(0, 10);
+    });
+    expect(dueLater.length).toBe(0);
+  });
 });
