@@ -44,10 +44,10 @@ describe("todoList test suite", () => {
   });
   // Overdue
   test("retrieval of overdue items", () => {
-    const overdueItems = overdue(); // directly used the method instead of writing the logic for filter
+    const overdueItems = overdue();
     expect(overdueItems.length).toBe(0);
     add({
-      title: "Finish the assignment",
+      title: "Buy milk",
       dueDate: getRandomDateInPast(),
       completed: false,
     });
@@ -55,11 +55,10 @@ describe("todoList test suite", () => {
   });
   // due today
   test("retrieval of due today's items", () => {
-    const duetodayItems = dueToday(); // directly used the method instead of writing the logic for filter
+    const duetodayItems = dueToday();
     expect(duetodayItems.length).toBe(2);
     add({
-      title: "Finish the assignment",
-      // get todays Date
+      title: "Buy milk",
       dueDate: new Date().toISOString().slice(0, 10),
       completed: false,
     });
@@ -67,11 +66,10 @@ describe("todoList test suite", () => {
   });
   // duelater
   test("retrieval of duelater items", () => {
-    const duelaterItems = dueLater(); // directly used the method instead of writing the logic for filter
+    const duelaterItems = dueLater();
     expect(duelaterItems.length).toBe(0);
     add({
-      title: "Finish the assignment",
-      // get random day in future
+      title: "Buy milk",
       dueDate: getRandomDateInFuture(),
       completed: false,
     });
