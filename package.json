@@ -3,9 +3,11 @@
     "minimist": "^1.2.8"
   },
   "devDependencies": {
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.4"
   },
   "scripts": {
-    "prepare": "cd..&& husky install todo-cli/.husky"
+    "prepare": "cd .. && husky install todo-cli/.husky"
   }
 }
