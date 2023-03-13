@@ -12,37 +12,37 @@ describe("todoList test suite", () => {
       dueDate: new Date().toISOString().slice(0, 10),
     });
   });
-  test("add a todo item", () => {
+  test("A test that checks creating a new todo", () => {
     const todoCount = all.length;
     add({
-      title: "buy milk",
+      title: "study",
       completed: false,
       dueDate: new Date().toISOString().slice(0, 10),
     });
     expect(all.length).toBe(todoCount + 1);
   });
 
-  test("mark as complete", () => {
+  test("...checks marking a todo as completed", () => {
     expect(all[0].completed).toBe(false);
     markAsComplete(0);
     expect(all[0].completed).toBe(true);
   });
   // overdue
-  test("Check overdue", () => {
+  test("...checks retrieval of overdue items", () => {
     const overdue = all.filter((item) => {
       return item.dueDate < new Date().toISOString().slice(0, 10);
     });
     expect(overdue.length).toBe(0);
   });
   // due today
-  test("Check dueToday", () => {
+  test("...checks retrieval of due today items", () => {
     const dueToday = all.filter((item) => {
       return item.dueDate === new Date().toISOString().slice(0, 10);
     });
     expect(dueToday.length).toBe(2);
   });
   // duelater
-  test("Check dueLater", () => {
+  test("...checks retrieval of due later items", () => {
     const dueLater = all.filter((item) => {
       return item.dueDate > new Date().toISOString().slice(0, 10);
     });
