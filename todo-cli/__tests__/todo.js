@@ -27,4 +27,11 @@ describe("todoList test suite", () => {
     markAsComplete(0);
     expect(all[0].completed).toBe(true);
   });
+  // overdue
+  test("Check overdue", () => {
+    const overdue = all.filter((item) => {
+      return item.dueDate < new Date().toISOString().slice(0, 10);
+    });
+    expect(overdue.length).toBe(0);
+  });
 });
