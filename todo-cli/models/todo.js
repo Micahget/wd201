@@ -1,6 +1,3 @@
-
-//The previous one
-/*
 'use strict';
 const {
   Model
