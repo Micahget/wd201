@@ -8,7 +8,12 @@
   "devDependencies": {
     "husky": "^8.0.3",
     "lint-staged": "^13.2.0",
-    "prettier": "^2.8.4"
+    "prettier": "^2.8.4",
+    "eslint": "^8.34.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-promise": "^6.1.1"
   },
   "scripts": {
     "prepare": "cd .. && husky install todo-cli/.husky"
