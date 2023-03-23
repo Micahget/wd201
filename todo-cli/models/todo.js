@@ -64,10 +64,8 @@ module.exports = (sequelize, DataTypes) => {
 
       console.log("Due Today");
       // FILL IN HERE
-      // todo due today, Todo.displayableString should return a string of the format `ID. [ ] TITLE` (date should not be shown)
       const dueToday = await Todo.dueToday();
       dueToday.forEach((todo) => {
-        //date should not be showen
         console.log(todo.displayableString());
       });
 
@@ -76,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       console.log("Due Later");
       // FILL IN HERE
       const dueLater = await Todo.dueLater();
-      dueLater.forEach((todo) => {
+      dueLater.forEach((todo) =>{
         console.log(todo.displayableString());
       });
     }
@@ -118,22 +116,12 @@ module.exports = (sequelize, DataTypes) => {
 
     static async markAsComplete(id) {
       // FILL in here to markAsComplete the item
-      return await Todo.update(
-        {
-          completed: true,
-        },
-        {
-          where: {
-            id: id,
-          },
-        }
-      );
+      return await Todo.update({complete: true}, {where : {id: id}})
     }
 
     displayableString() {
       let checkbox = this.completed ? "[x]" : "[ ]";
 
-      // if the duedate in the above is dueToday then don't show the Date
       if (this.dueDate === new Date().toISOString().slice(0, 10)) {
         return `${this.id}. ${checkbox} ${this.title}`;
       } else {

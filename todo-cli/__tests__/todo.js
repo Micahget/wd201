@@ -82,7 +82,7 @@ describe("todoList test suite", () => {
 */
 
 /* eslint-disable no-undef */
-const db = require("../models");
+const db = require("../models");//here we do ../ because we are in the test folder and we need to go back to the models folder.
 
 const getJSDate = (days) => {
   if (!Number.isInteger(days)) {
