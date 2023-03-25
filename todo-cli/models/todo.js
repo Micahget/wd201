@@ -54,7 +54,6 @@ module.exports = (sequelize, DataTypes) => {
 
       console.log("Overdue");
       // FILL IN here
-      // write a method to return the items that are overdue by using filter method
       const overdue = await Todo.overdue();
       overdue.forEach((todo) => {
         console.log(todo.displayableString());
@@ -96,15 +95,14 @@ module.exports = (sequelize, DataTypes) => {
       return await Todo.findAll({
         where: {
           dueDate: {
-            //ReferenceError: Op is not defined. I don't know why. I have imported sequelize and Op
-            [Op.eq]: new Date(),
+           [Op.eq]: new Date(),
           },
         },
       });
     }
 
     static async dueLater() {
-      // FILL IN HERE TO RETURN ITEMS DUE LATER
+      // FILL IN HERE
       return await Todo.findAll({
         where: {
           dueDate: {
@@ -115,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async markAsComplete(id) {
-      // FILL in here to markAsComplete the item
+      // FILL IN HERE
       return await Todo.update({complete: true}, {where : {id: id}})
     }
 
