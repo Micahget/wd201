@@ -9,14 +9,14 @@
   "test": {
     "username": "postgres",
     "password": "mypostgres",
-    "database": "database_test",
+    "database": "wd-todo-test",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
     "password": "mypostgres",
-    "database": "database_production",
+    "database": "wd-todo-production",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }

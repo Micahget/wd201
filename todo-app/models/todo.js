@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({title: title, dueDate: dueDate, completed: false});
     }//here I wriet the static method addTodo instead of using it in the index.js file because we can use it anywhere in the app 
 
-    static markAsCompleted(){
+    markAsCompleted(){
       return this.update({completed: true})
     }
   }
