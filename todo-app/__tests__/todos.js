@@ -82,11 +82,13 @@ describe("Todo Application", function () {
 
     const parsedResponse = JSON.parse(response.text);
     const todoID = parsedResponse.id;
-    expect(parsedResponse.completed).toBe(false);
 
-    const deleteResponse = await agent.delete(`/todos/${todoID}`);
-    const parsedDeleteResponse = JSON.parse(deleteResponse.text);
-    console.log(parsedDeleteResponse);
-    expect(parsedDeleteResponse).toBe(true);
+    const deleteResponse = await agent.delete(`/todos/${todoID}`).send();
+    expect(deleteResponse.statusCode).toBe(200);
+    expect(deleteResponse.header["content-type"]).toBe(
+      "application/json; charset=utf-8"
+    );
+
+    expect(deleteResponse.body).toBe(true);
   });
 });
