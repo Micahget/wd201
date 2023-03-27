@@ -116,6 +116,7 @@ app.delete("/todos/:id", async function (request, response) {
   // FILL IN YOUR CODE HERE
   try {
     const todo = await Todo.findByPk(request.params.id);
+    // if todo exists
     if (todo) {
       await todo.destroy();
       return response.json(true);
