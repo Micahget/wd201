@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       console.log("My Todo list \n");
 
       console.log("Overdue");
-      // FILL IN here
+      // FILL IN HERE
       const overdue = await Todo.overdue();
       overdue.forEach((todo) => {
         console.log(todo.displayableString());
@@ -70,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
 
       console.log("\n");
 
+      
       console.log("Due Later");
       // FILL IN HERE
       const dueLater = await Todo.dueLater();
@@ -79,8 +80,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async overdue() {
-      // FILL IN HERE TO RETURN ITEMS OVERDUE
-      // write a metho to return the items that are overdue
+      // FILL IN HERE
       return await Todo.findAll({
         where: {
           dueDate: {
@@ -91,7 +91,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async dueToday() {
-      // FILL IN HERE TO RETURN ITEMS DUE tODAY
+      // FILL IN HERE
       return await Todo.findAll({
         where: {
           dueDate: {
