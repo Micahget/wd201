@@ -59,11 +59,27 @@ const express = require("express");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
+const path = require("path"); // here we are using path module to get the path of the public folder
 app.use(bodyParser.json());
 
-app.get("/", function (request, response) {
-  response.send("Hello World");
+
+
+// set the view engine to ejs
+app.set("view engine", "ejs");
+
+app.get("/", async (request, response) => {
+  const allTodos = await Todo.getTodos();
+  if (request.accepts("html")) {
+    response.render("index", { allTodos });
+  } else {
+    response.json(allTodos);
+
+  }
 });
+
+
+// to render files from the public folder
+app.use(express.static(path.join(__dirname, 'public')))// here we are using path module to get the path of the public folder
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
