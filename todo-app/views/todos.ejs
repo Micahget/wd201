@@ -30,7 +30,7 @@
 
 
             <div>
-                <h5>Overdue<span for="todo-checkbox-2" id="count-overdue" class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm tex-gray-600 bg-purple-50"><%= overdue.length %></span></h5>
+                <h5>Overdue<span id="count-overdue" class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm text-gray-600 bg-purple-50"><%= overdue.length %></span></h5>
                 <% overdue.map(todo => { %>
                 <ul class="list-none">
                     <li class="Todo-Item">
@@ -49,7 +49,7 @@
                     </li>
                     <% }).join('') %>
                 </ul>
-                <h5>Due Today<span for="todo-checkbox-2" id="count-due-today" class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm tex-gray-600 bg-purple-50"><%= dueToday.length %></span></h5>
+                <h5>Due Today<span id="count-due-today" class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm text-gray-600 bg-purple-50"><%= dueToday.length %></span></h5>
                 <% dueToday.map(todo => { %>
                     <ul class="list-none">
                         <li class="Todo-Item">
@@ -68,7 +68,8 @@
                         </li>
                         <% }).join('') %>
                     </ul>
-                <h5>Due Later <span for="todo-checkbox-2" id="count-due-later" class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm tex-gray-600 bg-purple-50"><%= dueLater.length %></span></h5>
+                <h5>Due Later <span id="count-due-later" class="border boarder-gray-300 rounded 
+                    px-2 py-1 ml-2 text-sm text-gray-600 bg-purple-50"><%= dueLater.length %></span></h5>
                 <% dueLater.map(todo => { %>
                     <ul class="list-none">
                         <li class="Todo-Item">
