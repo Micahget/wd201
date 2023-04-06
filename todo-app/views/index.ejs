@@ -11,55 +11,34 @@
 </head>
 
 <body>
+    
+    
     <div class="grid grid-cols-6">
+        
         <div class="col-start-3 col-span-2">
-            <%- include('header.ejs') %>
-                <!-- // here we want to run the external file header.ejs. to do that we use the include function inside the ejs tags -->
-                <form action="">
-                    <div class="flex gap-2 py-4">
-                        <div class="flex-auto">
-                            <input type="text" placeholder="What's new"
-                                class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
-                        </div>
-                        <div class="flex-auto">
+            <%- include ('header.ejs') %>
 
-                            <input type="date"
-                                class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4">
-
-                        </div>
-                        <div class="flex-none">
-                            <button type="submit"
-                                class="text-cyan-50 bg-green-600 px-5  py-1.5 rounded font-meduim mr-2 mb">Add</button>
-
-                        </div>
+            <form action="">
+                <div class="flex gap-2 py-4">
+                    <div class="flex-auto">
+                        <input type="text" placeholder="What's new?"
+                            class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
                     </div>
-                </form>
+                    <div class="flex-auto">
 
-                <div>
-                    <h5>Overdue</h5>
-                    <ul class="list-none">
-                        <li>
-                            <div class="flex w-fit items-center my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                                <input type="checkbox" name="" id="todo-checkbox-1"
-                                    class="w-4 h-4 text-blue-600 bg-gray-300">
-                                <label for="todo-checkbox-1" class="ml-2 text-sm tex-gray-600">Have to pay
-                                    electricity</label>
+                        <input type="date"
+                            class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4">
 
-                            </div>
-                        </li>
-                        <li>
-                            <div class="flex w-fit items-center my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                                <input type="checkbox" name="" id="todo-checkbox-2"
-                                    class="w-4 h-4 text-blue-600 bg-gray-300">
-                                <label for="todo-checkbox-2" class="ml-2 text-sm tex-gray-600">Have to pay water
-                                    bill</label>
+                    </div>
+                    <div class="flex-none">
+                        <button type="submit"
+                            class="text-cyan-50 bg-green-600 px-5  py-1.5 rounded font-meduim mr-2 mb">Add</button>
 
-                            </div>
-                        </li>
-                    </ul>
-                    <h5>Due Today</h5>
-                    <h5>Due Later</h5>
+                    </div>
                 </div>
+            </form>
+            <%- include('todos.ejs') %>
+                <%- include('footer.ejs') %>
         </div>
     </div>
 </body>
