@@ -7,6 +7,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function updateTodo(id) {
+            fetch(`/todos/${id}/markAsCompleted`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }).then(res => {
+                if (res.ok) {
+                    window.location.reload()
+                }
+            })
+            .catch((err) => console.error(err))
+        }
+        function deleteTodo(id) {
+            fetch(`/todos/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }).then(res => {
+                if (res.ok) {
+                    window.location.reload()
+                }
+            }).catch((err) => console.error(err))
+        }
+    </script>
     <title>To-do Manager</title>
 </head>
 
