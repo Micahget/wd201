@@ -3,8 +3,13 @@ const request = require("supertest");
 
 const db = require("../models/index");
 const app = require("../app");
+const cheerio = require("cheerio");
 
 let server, agent;
+function extractCsrfToken(res) {
+  var $ = cheerio.load(res.text);
+  return $('[name="_csrf"]').val();
+}
 
 describe("Todo Application", function () {
   beforeAll(async () => {
@@ -23,10 +28,13 @@ describe("Todo Application", function () {
   });
 
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
+    const res = await agent.get("/");
+    const csrfToken = extractCsrfToken(res);
     const response = await agent.post("/todos").send({
       title: "Buy milk",
       dueDate: new Date().toISOString(),
       completed: false,
+      _csrf: csrfToken,
     });
     expect(response.statusCode).toBe(302); // 302 is a redirect status code for POST requests
     // expect(response.header["content-type"]).toBe(

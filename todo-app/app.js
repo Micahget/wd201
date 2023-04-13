@@ -1,6 +1,9 @@
 /* eslint-disable */
 
 const express = require("express");
+var csrf = require("csurf");
+// define cookie parser
+var cookieParser = require("cookie-parser");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
@@ -8,15 +11,21 @@ const path = require("path"); // here we are using path module to get the path o
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 /* this is to post data from the form. It is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. */
+app.use(cookieParser("shh! some secret string"));
+app.use(csrf({ cookie: true }));
 
 // set the view engine to ejs
-/*// we add this get route to render the index.ejs file in the views folder and pass the data to it using the allTodos variable which is an array of all the todos in the database*/
 app.set("view engine", "ejs");
 
+/*// we add this get route to render the index.ejs file in the views folder and pass the data to it using the allTodos variable which is an array of all the todos in the database*/
 app.get("/", async (request, response) => {
   const allTodos = await Todo.getTodos();
   if (request.accepts("html")) {
-    response.render("index", { allTodos });
+    // if the browser
+    response.render("index", {
+      allTodos,
+      csrfToken: request.csrfToken(),
+    });
   } else {
     response.json(allTodos);
   }
