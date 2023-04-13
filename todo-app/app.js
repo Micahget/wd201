@@ -10,6 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 /* this is to post data from the form. It is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. */
 
 // set the view engine to ejs
+/*// we add this get route to render the index.ejs file in the views folder and pass the data to it using the allTodos variable which is an array of all the todos in the database*/
 app.set("view engine", "ejs");
 
 app.get("/", async (request, response) => {
@@ -20,6 +21,27 @@ app.get("/", async (request, response) => {
     response.json(allTodos);
   }
 });
+/*
+app.get("/", async (request, response) => {
+  const overdue = await Todo.overdue();
+  const dueToday = await Todo.dueToday();
+  const dueLater = await Todo.dueLater();
+
+  if (request.accepts("html")) {
+    response.render("index", { 
+      title: "Todo Application",
+      overdue,
+      dueToday,
+      dueLater
+     });
+  } else {
+    response.json({
+      overdue,
+      dueToday,
+      dueLater
+    });
+  }
+}); */
 
 // to render files from the public folder
 app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
