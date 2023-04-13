@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const express = require("express");
-var csrf = require("csurf");
+var csrf = require("tiny-csrf");
 // define cookie parser
 var cookieParser = require("cookie-parser");
 const app = express();
@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 /* this is to post data from the form. It is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. */
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf({ cookie: true }));
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
