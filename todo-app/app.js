@@ -18,6 +18,9 @@ app.use(csrf({ cookie: true }));
 app.set("view engine", "ejs");
 
 /*// we add this get route to render the index.ejs file in the views folder and pass the data to it using the allTodos variable which is an array of all the todos in the database*/
+
+/*
+// this one is my implementation. TO USE THIS, YOU SHOULD MAKE SOME CHANGES IN THE TODOS.EJS FILE AND TODO.JS FILE IN TESTS FOLDER.
 app.get("/", async (request, response) => {
   const allTodos = await Todo.getTodos();
   if (request.accepts("html")) {
@@ -29,28 +32,30 @@ app.get("/", async (request, response) => {
   } else {
     response.json(allTodos);
   }
-});
-/*
+}); 
+*/
+
 app.get("/", async (request, response) => {
   const overdue = await Todo.overdue();
   const dueToday = await Todo.dueToday();
   const dueLater = await Todo.dueLater();
 
   if (request.accepts("html")) {
-    response.render("index", { 
+    response.render("index", {
       title: "Todo Application",
       overdue,
       dueToday,
-      dueLater
-     });
+      dueLater,
+      csrfToken: request.csrfToken(),
+    });
   } else {
     response.json({
       overdue,
       dueToday,
-      dueLater
+      dueLater,
     });
   }
-}); */
+}); // the above code is not working b/c the overdue, dueToday and dueLater are not defined in the Todo model. Now they have been defined.
 
 // to render files from the public folder
 app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder

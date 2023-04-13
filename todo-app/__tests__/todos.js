@@ -14,7 +14,7 @@ function extractCsrfToken(res) {
 describe("Todo Application", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(3000, () => {});
+    server = app.listen(4000, () => {}); // we use differet port for testing to avoid conflicts
     agent = request.agent(server);
   });
 
@@ -44,23 +44,42 @@ describe("Todo Application", function () {
     // expect(parsedResponse.id).toBeDefined();
   });
 
-  // test("Marks a todo with the given ID as complete", async () => {
-  //   const response = await agent.post("/todos").send({
-  //     title: "Buy milk",
-  //     dueDate: new Date().toISOString(),
-  //     completed: false,
-  //   });
-  //   const parsedResponse = JSON.parse(response.text);
-  //   const todoID = parsedResponse.id;
+  test("Marks a todo with the given ID as complete", async () => {
+    let res = await agent.get("/"); //here we are getting the csrf token
+    let csrfToken = extractCsrfToken(res);
 
-  //   expect(parsedResponse.completed).toBe(false);
+    await agent.post("/todos").send({
+      title: "Buy milk",
+      dueDate: new Date().toISOString().slice(0, 10),
+      completed: false,
+      _csrf: csrfToken,
+    });
+    const groupedTodosResponse = await agent
+      .get("/")
+      .set("Accept", "application/json"); // here we are getting the todos from the database and storing them in the groupedTodosResponse variable. We are also setting the Accept header to application/json so that the response is in json format and not html
 
-  //   const markCompleteResponse = await agent
-  //     .put(`/todos/${todoID}/markASCompleted`)
-  //     .send();
-  //   const parsedUpdateResponse = JSON.parse(markCompleteResponse.text);
-  //   expect(parsedUpdateResponse.completed).toBe(true);
-  // });
+    const parsedGroupedTodosResponse = JSON.parse(groupedTodosResponse.text);
+    console.log("tHIS IS MY", parsedGroupedTodosResponse);
+    console.log("tHIS IS YOU", parsedGroupedTodosResponse.dueToday);
+    const dueTodayCount = parsedGroupedTodosResponse.dueToday.length;
+    const latestTodo = parsedGroupedTodosResponse.dueToday[dueTodayCount - 1];
+
+    /* 
+    // this one is my implementation
+    const parsedGroupedTodosResponse = JSON.parse(groupedTodosResponse.text); // here we are parsing the json response to a javascript object
+    const latestTodo = parsedGroupedTodosResponse[0]; // here we are getting the latest todo from the array of todos
+    */
+
+    res = await agent.get("/");
+    csrfToken = extractCsrfToken(res);
+    const markCompleteResponse = await agent
+      .put(`/todos/${latestTodo.id}/markASCompleted`)
+      .send({ _csrf: csrfToken });
+
+    const parsedMarkCompleteResponse = JSON.parse(markCompleteResponse.text);
+
+    expect(parsedMarkCompleteResponse.completed).toBe(true);
+  });
 
   // test("Fetches all todos in the database using /todos endpoint", async () => {
   //   await agent.post("/todos").send({

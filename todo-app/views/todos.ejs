@@ -1,32 +1,4 @@
-<!-- <table>
-    <% for( var i = 0; i < allTodos.length; i++){ %>
-        <tr>
-            <td>
-                <%= allTodos[i].title %>
-            </td>
-        </tr>
 
-        <% } %>
-
-</table> -->
-
-<!-- <table>
-    <% allTodos.map(todo => { %>
-        <tr>
-            <td><%= todo.title %></td>
-            <td><%= todo.dueDate %></td>
-            <td><%= todo.completed %></td>
-            <td><%= todo.id %></td>
-           <td> <a href="/todos/<%= todo.id %>/markAsCompleted">mark</a></td>
-        </tr>
-    <% }).join('') %>
-</table> -->
-
-
-<% const today=new Date(); %>
-    <% const dueToday=allTodos.filter(todo=> todo.dueDate === today.toISOString().split('T')[0]); %>
-        <% const overdue=allTodos.filter(todo=> todo.dueDate < today.toISOString().split('T')[0]); %>
-                <% const dueLater=allTodos.filter(todo=> todo.dueDate > today.toISOString().split('T')[0]); %>
 
 
                     <div>
