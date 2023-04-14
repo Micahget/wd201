@@ -10,7 +10,7 @@ const bodyParser = require("body-parser");
 const path = require("path"); // here we are using path module to get the path of the public folder
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
-/* this is to post data from the form. It is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. */
+/* this is to post data from the form. It is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. And it is used to parse the data that is sent in the request body.*/
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
