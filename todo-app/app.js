@@ -39,6 +39,7 @@ app.get("/", async (request, response) => {
   const overdue = await Todo.overdue();
   const dueToday = await Todo.dueToday();
   const dueLater = await Todo.dueLater();
+  const completedItem = await Todo.completedItem();
 
   if (request.accepts("html")) {
     response.render("index", {
@@ -46,6 +47,7 @@ app.get("/", async (request, response) => {
       overdue,
       dueToday,
       dueLater,
+      completedItem,
       csrfToken: request.csrfToken(),
     });
   } else {
@@ -53,6 +55,7 @@ app.get("/", async (request, response) => {
       overdue,
       dueToday,
       dueLater,
+      completedItem,
     });
   }
 }); // the above code is not working b/c the overdue, dueToday and dueLater are not defined in the Todo model. Now they have been defined.
@@ -118,9 +121,6 @@ app.delete("/todos/:id", async function (request, response) {
     console.log(error);
     return response.status(422).json(error);
   }
-  // First, we have to query our database to delete a Todo by ID.
-  // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
-  // response.send(true)
 });
 
 module.exports = app;
