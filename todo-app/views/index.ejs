@@ -11,13 +11,17 @@
     <script>
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         function updateTodo(id) {
-            fetch(`/todos/${id}/markAsCompleted`, {
+            // the id is todo-checkbox-id 
+            var completed = document.getElementById(`todo-checkbox-${id}`).checked;
+            
+            fetch(`/todos/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    _csrf: token
+                    _csrf: token,
+                    completed: completed
                 })
             }).then(res => {
                 if (res.ok) {

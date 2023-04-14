@@ -24,6 +24,13 @@ module.exports = (sequelize, DataTypes) => {
     markAsCompleted() {
       return this.update({ completed: true });
     }
+    setCompletionStatus(completed) {
+      if (completed === true) {
+        return this.update({ completed: true });
+      } else {
+        return this.update({ completed: false });
+      }
+    }
     // I added the below 3 methods, overdue dueToday and dueLater to implement the todo app in the instaractors way
     static overdue() {
       return this.findAll({
