@@ -54,8 +54,6 @@ describe("Todo Application", function () {
       .set("Accept", "application/json");
 
     const parsedGroupedTodosResponse = JSON.parse(groupedTodosResponse.text);
-    console.log("tHIS IS MY", parsedGroupedTodosResponse);
-    console.log("tHIS IS YOU", parsedGroupedTodosResponse.dueToday);
     const dueTodayCount = parsedGroupedTodosResponse.dueToday.length;
     const latestTodo = parsedGroupedTodosResponse.dueToday[dueTodayCount - 1];
     const id = latestTodo.id;
@@ -89,8 +87,6 @@ describe("Todo Application", function () {
       .set("Accept", "application/json");
 
     const parsedGroupedTodosResponse = JSON.parse(groupedTodosResponse.text);
-    console.log("tHIS IS MY", parsedGroupedTodosResponse);
-    console.log("tHIS IS YOU", parsedGroupedTodosResponse.dueToday);
     const dueTodayCount = parsedGroupedTodosResponse.dueToday.length;
     const latestTodo = parsedGroupedTodosResponse.dueToday[dueTodayCount - 1];
     const id = latestTodo.id;
