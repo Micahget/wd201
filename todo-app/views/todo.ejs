@@ -2,14 +2,14 @@
 
 
                     <div>
-                        <h5>Overdue
+                        <h5><%= title %>
                             <span id="count-overdue"
                                 class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm text-gray-600 bg-purple-50">
                                 <%= overdue.length %>
                             </span>
                         </h5>
 
-                        <% overdue.map(todo=> { %>
+                        <% data.map(todo=> { %>
                             <ul class="list-none">
                                 <li class="Todo-Item">
                                     <div class="flex w-fit items-center my-2 px-2 py-1 hover:bg-purple-50 rounded">
@@ -33,6 +33,8 @@
                                 </li>
                                 <% }).join('') %>
                             </ul>
+                            <!--
+                            The code below is my original code. I rendered each section by giving same implementation for each section. I have commented it out for reference.
                             <h5>Due Today <span id="count-due-today"
                                     class="border boarder-gray-300 rounded px-2 py-1 ml-2 text-sm text-gray-600 bg-purple-50">
                                     <%= dueToday.length %>
@@ -123,4 +125,5 @@
                                             </li>
                                             <% }).join('') %>
                                         </ul>
+                                    -->
                     </div>
