@@ -15,7 +15,7 @@ if (config.use_env_variable) {
 } else {
   sequelize = new Sequelize(
     config.database,
-    config.username,
+    config.username, // here the user name is root
     config.password,
     config
   );
