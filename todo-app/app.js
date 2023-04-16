@@ -15,11 +15,15 @@ const session = require("express-session");
 const connectEnsureLogin = require("connect-ensure-login");
 const LocalStrategy = require("passport-local").Strategy;
 
+// password encryption 
+const bcrypt = require("bcrypt");
+
+const saltRounds = 10;
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }));
+
 /* this is to post data from the form. It 
 is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. And it is used to parse the data that is sent in the request body.*/
-
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
@@ -42,9 +46,17 @@ passport.use(
       passwordField: "password",
     },
     (username, password, done) => {
-      User.findOne({ where: { email: username, password: password } }).then((user) => { // here user is the object returned from the database
-        return done(null, user); // here done is a function that is called when the authentication is successful
-      }).catch((error) => {
+      User.findOne({ where: { email: username 
+      } }).then((user) => {
+        (async (user) => {
+          const match = await bcrypt.compare(password, user.password);
+          if (match) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: "Incorrect password." });
+          }
+        })(user);
+      }).catch((error) => { 
         return done(error);
       });
     }
@@ -172,13 +184,13 @@ app.get("/signup", function (request, response) {
 
 // creating users route to render the signup.ejs file
 app.post("/users", async function (request, response) {
-  console.log("first name", request.body.firstName);
+  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
   try {
     const user = await User.create({
       firstName: request.body.firstName,
       lastName: request.body.lastName,
       email: request.body.email,
-      password: request.body.password,
+      password: hashedPwd,
 
     });
     // here we should initialize the session
@@ -194,6 +206,19 @@ app.post("/users", async function (request, response) {
     return response.status(422).json(error);
   }
 });
+
+// render the login page
+app.get("/login", function (request, response) {
+  response.render("login", { title: "Login", csrfToken: request.csrfToken() }); // here the title is located in the login.ejs file  
+});
+
+// creating session route to render the login.ejs file
+app.post("/session", passport.authenticate('local', {
+  failureRedirect: "/login"
+}), (request, response) => {
+  response.redirect("/todos");
+});
+
 
 
 app.post("/todos", async function (request, response) {
