@@ -4,7 +4,7 @@ const express = require("express");
 var csrf = require("tiny-csrf");
 // define cookie parser
 var cookieParser = require("cookie-parser");
-const app = express(); // here we are creating an instance of express
+const app = express();
 const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path"); // here we are using path module to get the path of the public folder
@@ -16,6 +16,8 @@ const passport = require("passport");
 const session = require("express-session");
 const connectEnsureLogin = require("connect-ensure-login");
 const LocalStrategy = require("passport-local").Strategy;
+
+// password encryption 
 const bcrypt = require("bcrypt");
 
 // connect flash message
@@ -24,9 +26,8 @@ app.use(flash());
 
 
 
-app.use(bodyParser.json());
-
 const saltRounds = 10;
+app.use(bodyParser.json());
 
 /* this is to post data from the form. It 
 is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. And it is used to parse the data that is sent in the request body.*/
@@ -34,21 +35,25 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
-// here we are using express-session middleware to store the session data in the server memory
+// configure passport.js to use the session
 app.use(
   session({
     secret: "my_super_secret_key-2345235234534534534",
     cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
   })
-  );
-  
-  app.use(passport.initialize());
-  app.use(passport.session());
-  
-  
- 
-  // set the view engine to ejs
-  app.set("view engine", "ejs");
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// to render files from the public folder
+app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
+
+
+// set the view engine to ejs
+app.set("view engine", "ejs");
+
+
 
 // configure passport.js to use the local strategy
 passport.use(
@@ -58,32 +63,33 @@ passport.use(
       passwordField: "password",
     },
     (username, password, done) => {
-      User.findOne({ where: { email: username } })
-        .then(async function (user) {
-          const result = await bcrypt.compare(password, user.password);
-          if (result) {
+      User.findOne({ where: { email: username 
+      } }).then((user) => {
+        (async (user) => {
+          const match = await bcrypt.compare(password, user.password);
+          if (match) {
             return done(null, user);
           } else {
             return done(null, false, {
               message: "Incorrect password."
             });
           }
-        })
-        .catch((error) => {
-          return done(error);
-        });
+        })(user);
+      }).catch((error) => {
+        return done(error);
+      });
     }
-  )
-);
-
-
-// implementing flash message on login
-app.use(function (request, response, next) {
-  response.locals.messages = request.flash();
-  next();
-});
-
-// tell passport how to serialize the user
+    )
+    );
+    
+    // tell passport how to serialize the user
+    /* here serialize means 
+ convert an object into a string. And deserialize 
+means to convert a string into an object.
+ So, here we are telling passport how to convert the user object into a string. And we are using the user id to do that. 
+ the reson why we are serializing 
+is b/c we want to store the user id in the session.
+ And we want to store the user id in the session b/c we want to know which user is logged in. */
 passport.serializeUser((user, done) => {
   console.log("serializing user in session ", user.id);
   done(null, user.id);
@@ -100,6 +106,26 @@ passport.deserializeUser((id, done) => {
 });
 
 
+/*// we add this get route to
+ render t
+ he index.ejs file in the views folder and pass the data to it using the allTodos variable which is an array of all the todos in the database
+ 
+// this one is my implementation. TO USE THIS, YOU SHOULD MAKE SOME CHANGES IN THE TODOS
+.EJS FILE AND TODO.JS FILE IN TESTS FOLDER.
+app.get("/", async (request, response) => {
+  const allTodos = await Todo.getTodos();
+  if (request.accepts("html")) {
+    // if the browser
+    response.render("index", {
+      allTodos,
+      csrfToken: request.csrfToken(),
+    });
+  } else {
+    response.json(allTodos);
+  }
+}); 
+*/
+
 // this is root route and it is public
 app.get("/", async (request, response) => {
   response.render("index", {
@@ -112,11 +138,10 @@ app.get("/", async (request, response) => {
 /*// here this 
 page is private page and it is protected by the authentication middleware that is what connectEnsureLogin.ensureLoggedIn() does */
 app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-  const loggedInUser = request.user.id;
-  const overdue = await Todo.overdue(loggedInUser);
-  const dueToday = await Todo.dueToday(loggedInUser);
-  const dueLater = await Todo.dueLater(loggedInUser);
-  const completedItem = await Todo.completedItem(loggedInUser);
+  const overdue = await Todo.overdue();
+  const dueToday = await Todo.dueToday();
+  const dueLater = await Todo.dueLater();
+  const completedItem = await Todo.completedItem();
 
   if (request.accepts("html")) {
     response.render("todos", {
@@ -138,6 +163,8 @@ app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, 
 });
 
 
+// to render files from the public folder
+app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
@@ -205,15 +232,12 @@ app.get("/login", function (request, response) {
 });
 
 // creating session route to render the login.ejs file
-app.post("/session",passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  function (request, response) {
-    console.log(request.user);
-    response.redirect("/todos");
-  }
-);
+app.post("/session", passport.authenticate('local', {
+  failureRedirect: "/login"
+}), (request, response) => {
+  response.redirect("/todos");
+});
+
 // creating logout route to render the login.ejs file
 app.get("/signout", (request, response, next) => {
   request.logout((error) => { //logout is a method provided by passport
@@ -226,27 +250,21 @@ app.get("/signout", (request, response, next) => {
 // this method is used to create a new todo
 app.post("/todos", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   console.log("Processing new Todo ...", request.user);
-  const { name } = request.body; 
-  
-  if (!name || name.length < 5) {
-    request.flash('error', 'Todo name must be at least 5 characters long');
-    return response.redirect("/todos");
-  }
-    try {
+  try {
     await Todo.addTodo({
       title: request.body.title,
       dueDate: request.body.dueDate,
       userId: request.user.id,
     });
-    return response.redirect("/todos")
+    return response.redirect("/todos");
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
-}); // this method is used to create a new todo
+});
 
-// this method is used to update a todo
-app.put("/todos/:id", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+
+app.put("/todos/:id", async function (request, response) {
   const todo = await Todo.findByPk(request.params.id);
   try {
     // get the value of completed in /todos/:id/completed
@@ -258,19 +276,18 @@ app.put("/todos/:id", connectEnsureLogin.ensureLoggedIn(), async function (reque
     return response.status(422).json(error);
   }
 });
-// this method is used to delete a todo
-app.delete("/todos/:id", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+
+app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
   // FILL IN YOUR CODE HERE
   try {
-    const userId = request.user.id;
-    await Todo.remove(request.params.id, userId);
+    await Todo.remove(request.params.id);
     return response.json({ success: true });
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
-
 });
+
 module.exports = app;
 

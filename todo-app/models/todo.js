@@ -34,45 +34,40 @@ module.exports = (sequelize, DataTypes) => {
         return this.update({ completed: false });
       }
     }
-    static completedItem(userId) {
+    static completedItem() {
       return this.findAll({
         where: {
           completed: true,
-          userId,
         },
-
       });
     }
     // I added the below 3 methods, overdue dueToday and dueLater to implement the todo app in the instaractors way
-    static overdue(userId) {
+    static overdue() {
       return this.findAll({
         where: {
           dueDate: {
             [Op.lt]: new Date(),
           },
-          userId,
           completed: false,
         },
       });
     }
-    static dueToday(userId) {
+    static dueToday() {
       return this.findAll({
         where: {
           dueDate: {
             [Op.eq]: new Date(),
           },
-          userId,
           completed: false,
         },
       });
     }
-    static dueLater(userId) {
+    static dueLater() {
       return this.findAll({
         where: {
           dueDate: {
             [Op.gt]: new Date(),
           },
-          userId,
           completed: false,
         },
       });
@@ -82,7 +77,6 @@ module.exports = (sequelize, DataTypes) => {
       return this.destroy({
         where: {
           id,
-          userId,
         },
       });
     }
