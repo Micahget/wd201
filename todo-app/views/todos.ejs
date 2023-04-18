@@ -56,18 +56,22 @@
 
         <div class="col-start-3 col-span-2">
             <%- include ('header.ejs') %>
+            <!--signout link here-->
+            <p class="py-2">Log out: <a class=" text-green-400" href="/signout">sign-out</a></p>
                 <form action="/todos" method="post">
+
                     <input type="hidden" name="_csrf" value="<%= csrfToken%>" /> <!--this is for csrf token-->
+                    
                     <div class="flex gap-2 py-4">
                         <div class="flex-auto">
                             <input type="text" name="title" placeholder="What's new?"
-                                class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+                                class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm"  />
                         </div>
                         <div class="flex-auto">
 
                             <input type="date" name="dueDate"
                                 class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4"
-                                required>
+                                >
 
                         </div>
                         <div class="flex-none">
@@ -77,6 +81,11 @@
                         </div>
                     </div>
                 </form>
+                <% if(messages && messages.error && messages.error.length > 0)  { %>
+                    <% for(var i=0; i<messages.error.length; i++) { %>
+                            <li class="text-red-600"> <%= messages.error[i] %></li>
+                    <% } %>
+                  <% } %>
 
                 <div>
                     <%- include('todo.ejs', {title: "Overdue" , data: overdue}) %>

@@ -2,12 +2,15 @@
 
 const express = require("express");
 var csrf = require("tiny-csrf");
-// define cookie parser
 var cookieParser = require("cookie-parser");
 const app = express();
 const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path"); // here we are using path module to get the path of the public folder
+// to render files from the public folder
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
+
 
 // import authentication middlewares
 const passport = require("passport");
@@ -27,8 +30,7 @@ app.use(flash());
 const saltRounds = 10;
 app.use(bodyParser.json());
 
-/* this is to post data from the form. It 
-is a middleware that parses incoming requests with urlencoded payloads and is based on body-parser. It is used to parse the data that the user submits in the form. And it is used to parse the data that is sent in the request body.*/
+
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
@@ -44,15 +46,16 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// to render files from the public folder
-app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
 
 
 // set the view engine to ejs
 app.set("view engine", "ejs");
 
 
-
+app.use(function(request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 // configure passport.js to use the local strategy
 passport.use(
   new LocalStrategy(
@@ -61,34 +64,21 @@ passport.use(
       passwordField: "password",
     },
     (username, password, done) => {
-      User.findOne({
-        where: {
-          email: username
-        }
-      }).then((user) => {
-        (async (user) => {
-          const match = await bcrypt.compare(password, user.password);
-          if (match) {
-            return done(null, user);
-          } else {
-            return done(null, false, { message: "Incorrect password." });
-          }
-        })(user);
-      }).catch((error) => {
-        return done(error);
-      });
+      User.findOne({ where: { email: username } })
+  .then(async function (user) {
+    const result = await bcrypt.compare(password, user.password);
+    if (result) {
+      return done(null, user);
+    } else {
+      return done(null, false, { message: "Invalid password" });
     }
-    )
-    );
+  })
+  .catch((error) => {
+    return done(error);
+  });
+    }));
     
-    // tell passport how to serialize the user
-    /* here serialize means 
- convert an object into a string. And deserialize 
-means to convert a string into an object.
- So, here we are telling passport how to convert the user object into a string. And we are using the user id to do that. 
- the reson why we are serializing 
-is b/c we want to store the user id in the session.
- And we want to store the user id in the session b/c we want to know which user is logged in. */
+  
 passport.serializeUser((user, done) => {
   console.log("serializing user in session ", user.id);
   done(null, user.id);
@@ -105,26 +95,6 @@ passport.deserializeUser((id, done) => {
 });
 
 
-/*// we add this get route to
- render t
- he index.ejs file in the views folder and pass the data to it using the allTodos variable which is an array of all the todos in the database
- 
-// this one is my implementation. TO USE THIS, YOU SHOULD MAKE SOME CHANGES IN THE TODOS
-.EJS FILE AND TODO.JS FILE IN TESTS FOLDER.
-app.get("/", async (request, response) => {
-  const allTodos = await Todo.getTodos();
-  if (request.accepts("html")) {
-    // if the browser
-    response.render("index", {
-      allTodos,
-      csrfToken: request.csrfToken(),
-    });
-  } else {
-    response.json(allTodos);
-  }
-}); 
-*/
-
 // this is root route and it is public
 app.get("/", async (request, response) => {
   response.render("index", {
@@ -134,13 +104,13 @@ app.get("/", async (request, response) => {
   
 });
 
-/*// here this 
-page is private page and it is protected by the authentication middleware that is what connectEnsureLogin.ensureLoggedIn() does */
+
 app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-  const overdue = await Todo.overdue();
-  const dueToday = await Todo.dueToday();
-  const dueLater = await Todo.dueLater();
-  const completedItem = await Todo.completedItem();
+  const userId = request.user.id;
+  const overdue = await Todo.overdue(userId);
+  const dueToday = await Todo.dueToday(userId);
+  const dueLater = await Todo.dueLater(userId);
+  const completedItem = await Todo.completedItem(userId);
 
   if (request.accepts("html")) {
     response.render("todos", {
@@ -162,8 +132,6 @@ app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, 
 });
 
 
-// to render files from the public folder
-app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
@@ -196,10 +164,19 @@ app.get("/signup", function (request, response) {
   response.render("signup", { title: "Signup", csrfToken: request.csrfToken() });
 });
 
+// render the users page
+app.get("/users", function (request, response) {
+  response.render("signup", { title: "login", csrfToken: request.csrfToken() });
+});
 
 // creating users route to render the signup.ejs file
 app.post("/users", async function (request, response) {
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  const { firstName, email, password } = request.body;
+  if(!firstName ||  !email || !password) {
+    request. flash("error", "Please fill all the fields");
+    return response.redirect("/users");
+  }
   try {
     const user = await User.create({
       firstName: request.body.firstName,
@@ -229,7 +206,8 @@ app.get("/login", function (request, response) {
 
 // creating session route to render the login.ejs file
 app.post("/session", passport.authenticate('local', {
-  failureRedirect: "/login"
+  failureRedirect: "/login",
+  failureFlash: true,
 }), (request, response) => {
   response.redirect("/todos");
 });
@@ -246,6 +224,14 @@ app.get("/signout", (request, response, next) => {
 // this method is used to create a new todo
 app.post("/todos", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   console.log("Processing new Todo ...", request.user);
+  const { title, dueDate } = request.body;
+  if(!title || title.length < 5 ) {
+    request.flash("error", "Todo title must be at least 5 characters");
+    return response.redirect("/todos");
+  }else if(!dueDate) {
+    request.flash("error", "Please enter due date");
+    return response.redirect("/todos");
+  }
   try {
     await Todo.addTodo({
       title: request.body.title,
@@ -275,9 +261,10 @@ app.put("/todos/:id", async function (request, response) {
 
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
+  const userId = request.user.id;
   // FILL IN YOUR CODE HERE
   try {
-    await Todo.remove(request.params.id);
+    await Todo.remove(request.params.id, userId);
     return response.json({ success: true });
   } catch (error) {
     console.log(error);
