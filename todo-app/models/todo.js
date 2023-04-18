@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static addTodo({ title, dueDate, userId }) {
-      return this.create({ title: title, dueDate: dueDate, completed: false, userId });
+      return this.create({ title: title, dueDate: dueDate, completed: false, userId});
     }
 
     static getTodos() {
@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async remove(id, userId) {
+    static async remove(id , userId) {
       return this.destroy({
         where: {
           id,
@@ -83,19 +83,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Todo.init(
     {
-      title:
-      {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notNull: true,
-          len: 5
-        }
-
-        },
-        dueDate: DataTypes.DATEONLY,
-        completed: DataTypes.BOOLEAN,
-      },
+      title: DataTypes.STRING,
+      dueDate: DataTypes.DATEONLY,
+      completed: DataTypes.BOOLEAN,
+    },
     {
       sequelize,
       modelName: "Todo",

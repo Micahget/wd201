@@ -8,8 +8,6 @@ const app = express();
 const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path"); // here we are using path module to get the path of the public folder
-app.set("views", path.join(__dirname, "views")); // here we are setting the path of the views folder
-app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder.
 
 // import authentication middlewares
 const passport = require("passport");
@@ -63,16 +61,17 @@ passport.use(
       passwordField: "password",
     },
     (username, password, done) => {
-      User.findOne({ where: { email: username 
-      } }).then((user) => {
+      User.findOne({
+        where: {
+          email: username
+        }
+      }).then((user) => {
         (async (user) => {
           const match = await bcrypt.compare(password, user.password);
           if (match) {
             return done(null, user);
           } else {
-            return done(null, false, {
-              message: "Incorrect password."
-            });
+            return done(null, false, { message: "Incorrect password." });
           }
         })(user);
       }).catch((error) => {
@@ -132,7 +131,7 @@ app.get("/", async (request, response) => {
     title: "Todo Application",
     csrfToken: request.csrfToken(),
   });
-
+  
 });
 
 /*// here this 
@@ -176,7 +175,9 @@ app.get("/todos", async function (_request, response) {
     console.log(error);
     return response.status(422).json(error);
   }
-  
+  // First, we have to query our PostgerSQL database using Sequelize to get list of all Todos.
+  // Then, we have to respond with all Todos, like:
+  // response.send(todos)
 });
 
 
@@ -199,11 +200,6 @@ app.get("/signup", function (request, response) {
 // creating users route to render the signup.ejs file
 app.post("/users", async function (request, response) {
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  const { name } =request.body;
-  if(!name) {
-    request.flash ("error", "Please fill in all the fields");
-    return response.redirect("/signup");
-  }
   try {
     const user = await User.create({
       firstName: request.body.firstName,
@@ -290,4 +286,3 @@ app.delete("/todos/:id", async function (request, response) {
 });
 
 module.exports = app;
-
