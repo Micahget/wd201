@@ -62,7 +62,7 @@
                     <div class="flex gap-2 py-4">
                         <div class="flex-auto">
                             <input type="text" name="title" placeholder="What's new?"
-                                class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+                                class="border boarder-gray-300 rounded text-gray-900 w-full p-2 text-sm"  />
                         </div>
                         <div class="flex-auto">
 
@@ -78,6 +78,14 @@
                         </div>
                     </div>
                 </form>
+                <% if(messages && messages.error && messages.error.length > 0)  { %>
+                    <% for(var i=0; i<messages.error.length; i++) { %>
+                          
+                  <div class="bg-red-100 border border-red-400 text-red-700 px-3 py-3  rounded relative" role="alert">
+                    <%= messages.error[i] %> 
+                  </div>
+                  <% } %>
+                  <% } %>
 
                 <div>
                     <%- include('todo.ejs', {title: "Overdue" , data: overdue}) %>

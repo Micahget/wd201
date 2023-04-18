@@ -3,7 +3,7 @@ const request = require("supertest");
 
 const db = require("../models/index");
 const app = require("../app");
-const cheerio = require("cheerio"); 
+const cheerio = require("cheerio");
 
 let server, agent;
 function extractCsrfToken(res) {
@@ -25,7 +25,7 @@ const login = async (agent, username, password) => {
 describe("Todo Application", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(4000, () => {}); // we use differet port for testing to avoid conflicts
+    server = app.listen(4000, () => { }); // we use differet port for testing to avoid conflicts
     agent = request.agent(server);
   });
 
@@ -63,7 +63,7 @@ describe("Todo Application", function () {
     res = await agent.get("/todos");
     expect(res.statusCode).toBe(302);
   })
-  
+
   // test to create a todo
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
     // add login 
@@ -149,7 +149,7 @@ describe("Todo Application", function () {
     expect(parsedMarkCompleteResponse.completed).toBe(false);
   });
 
-// test to delete todo
+  // test to delete todo
   test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
     // add login 
     const agent = request.agent(server);
