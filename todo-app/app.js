@@ -56,6 +56,7 @@ app.use(function(request, response, next) {
   response.locals.messages = request.flash();
   next();
 });
+/* course code 
 // configure passport.js to use the local strategy
 passport.use(
   new LocalStrategy(
@@ -78,7 +79,37 @@ passport.use(
   });
     }));
     
-  
+  */
+ // my local strategy code 
+ passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (email, password, done) => {
+      try {
+        // Find the user by email
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+          // If no user found with the given email, return an error
+          return done(null, false, { message: "Invalid email address" });
+        }
+        // Compare the provided password with the stored password hash
+        const result = await bcrypt.compare(password, user.password);
+        if (result) {
+          // If the passwords match, return the user object
+          return done(null, user);
+        } else {
+          // If the passwords don't match, return an error
+          return done(null, false, { message: "Invalid password" });
+        }
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
 passport.serializeUser((user, done) => {
   console.log("serializing user in session ", user.id);
   done(null, user.id);

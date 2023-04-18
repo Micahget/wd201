@@ -3,7 +3,7 @@ const request = require("supertest");
 
 const db = require("../models/index");
 const app = require("../app");
-const cheerio = require("cheerio"); 
+const cheerio = require("cheerio");
 const passport = require("passport");
 
 let server, agent;
@@ -26,7 +26,7 @@ const login = async (agent, username, password) => {
 describe("Todo Application", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(4000, () => {}); // we use differet port for testing to avoid conflicts
+    server = app.listen(4000, () => { }); // we use differet port for testing to avoid conflicts
     agent = request.agent(server);
   });
 
@@ -65,11 +65,13 @@ describe("Todo Application", function () {
     res = await agent.get("/todos");
     expect(res.statusCode).toBe(302);
   })
-  
+
   // test to create a todo
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
+    // authenticate user before testing
     const agent = request.agent(server);
-    await login(agent, "doe@gmail.com", "12345");
+    await login(agent, "doe@gmail.com", "12345")
+
     const res = await agent.get("/todos");
     const csrfToken = extractCsrfToken(res);
     const response = await agent.post("/todos").send({
@@ -78,11 +80,15 @@ describe("Todo Application", function () {
       completed: false,
       _csrf: csrfToken,
     });
-    
+
     expect(response.statusCode).toBe(302);
   });
 
   test("Marks a todo with the given ID as complete", async () => {
+    // authenticate user before testing
+    const agent = request.agent(server);
+    await login(agent, "doe@gmail.com", "12345")
+
     let res = await agent.get("/todos"); //here we are getting the csrf token
     let csrfToken = extractCsrfToken(res);
 
@@ -115,6 +121,10 @@ describe("Todo Application", function () {
 
   // test to check if the item is unmarked
   test("Marks a todo with the given ID as incomplete", async () => {
+    // authenticate user before testing
+    const agent = request.agent(server);
+    await login(agent, "doe@gmail.com", "12345")
+
     let res = await agent.get("/todos"); //here we are getting the csrf token
     let csrfToken = extractCsrfToken(res);
 
@@ -146,8 +156,12 @@ describe("Todo Application", function () {
     expect(parsedMarkCompleteResponse.completed).toBe(false);
   });
 
-// test to delete todo
+  // test to delete todo
   test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
+    // authenticate user before testing
+    const agent = request.agent(server);
+    await login(agent, "doe@gmail.com", "12345")
+
     let res = await agent.get("/todos");
     let csrfToken = extractCsrfToken(res);
 
@@ -181,4 +195,5 @@ describe("Todo Application", function () {
     );
     expect(deleteResponse.body.success).toBe(true);
   }); 
+  
 });
