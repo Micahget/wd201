@@ -8,7 +8,7 @@ const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path"); // here we are using path module to get the path of the public folder
 // to render files from the public folder
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "views")); // this is the path to the views folder. i need it 
 app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
 
 
@@ -31,7 +31,7 @@ const saltRounds = 10;
 app.use(bodyParser.json());
 
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); // 
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
@@ -142,6 +142,8 @@ app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, 
   const dueToday = await Todo.dueToday(userId);
   const dueLater = await Todo.dueLater(userId);
   const completedItem = await Todo.completedItem(userId);
+  // give the details of the user to the view
+  const user = request.user;
 
   if (request.accepts("html")) {
     response.render("todos", {
@@ -151,6 +153,7 @@ app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, 
       dueLater,
       completedItem,
       csrfToken: request.csrfToken(),
+      user,
     });
   } else {
     response.json({
@@ -158,6 +161,7 @@ app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, 
       dueToday,
       dueLater,
       completedItem,
+      user
     });
   }
 });
@@ -206,6 +210,12 @@ app.post("/users", async function (request, response) {
   const { firstName, email, password } = request.body;
   if(!firstName ||  !email || !password) {
     request. flash("error", "Please fill all the fields");
+    return response.redirect("/users");
+  }
+  // check the database if the user already exists
+  const user = await User.findOne({ where: { email } });
+  if (user) {
+    request.flash("error", "User already exists");
     return response.redirect("/users");
   }
   try {

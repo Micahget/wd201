@@ -56,8 +56,10 @@
 
         <div class="col-start-3 col-span-2">
             <%- include ('header.ejs') %>
-            <!--signout link here-->
-            <p class="py-2">Log out: <a class=" text-green-400" href="/signout">sign-out</a></p>
+
+            <!--wellcome message-->
+            <h1 class="text-2xl font-bold text-green-400">Welcome <%= user.firstName %></h1>
+            
                 <form action="/todos" method="post">
 
                     <input type="hidden" name="_csrf" value="<%= csrfToken%>" /> <!--this is for csrf token-->
@@ -93,6 +95,7 @@
                             <%- include('todo.ejs', {title: "Due Later" , data: dueLater}) %>
                                 <%- include('todo.ejs', {title: "Completed Items" , data: completedItem}) %>
                 </div>
+                <p class="py-2">Log out: <a class=" text-green-400" href="/signout">sign-out</a></p>
                 <%- include('footer.ejs') %>
         </div>
     </div>

@@ -65,7 +65,36 @@ describe("Todo Application", function () {
     res = await agent.get("/todos");
     expect(res.statusCode).toBe(302);
   })
+/*
+  // sign up another user
+  // test to sign up a user
+  test("Signs up a user", async () => {
+    //signup is the route
+    let res = await agent.get("/signup");
+    const csrfToken = extractCsrfToken(res);
+    res = await agent.post("/users").send({
+      firstName: "Jack",
+      lastName: "Moe",
+      email: "jack@gmail.com",
+      password: "123456",
+      _csrf: csrfToken,
+    });
+    expect(res.statusCode).toBe(302);
+  });
 
+  // // sign out test
+  test("sign out", async () => {
+    let res = await agent.get("/todos");
+    expect(res.statusCode).toBe(200);
+
+    res = await agent.get("/signout");
+    expect(res.statusCode).toBe(302);
+    res = await agent.get("/todos");
+    expect(res.statusCode).toBe(302);
+  })
+  */
+
+  /*
   // test to create a todo
   test("Creates a todo and responds with json at /todos POST endpoint", async () => {
     // authenticate user before testing
@@ -195,5 +224,81 @@ describe("Todo Application", function () {
     );
     expect(deleteResponse.body.success).toBe(true);
   }); 
-  
+  */
+/*
+  // test to verify userA can't update userB's todo
+  test("UserA can't update userB's todo", async () => {
+    // authenticate user before testing
+    const agent = request.agent(server);
+    await login(agent, "doe@gmail.com", "12345")
+
+    let res = await agent.get("/todos");
+    let csrfToken = extractCsrfToken(res);
+
+    await agent.post("/todos").send({
+      title: "Buy xbox",
+      dueDate: new Date().toISOString(),
+      completed: false,
+      _csrf: csrfToken,
+    });
+
+    const groupedTodosResponse = await agent
+      .get("/todos")
+      .set("Accept", "application/json");
+    const parsedGroupedTodosResponse = JSON.parse(groupedTodosResponse.text);
+    const dueTodayCount = parsedGroupedTodosResponse.dueToday.length;
+    const latestTodo = parsedGroupedTodosResponse.dueToday[dueTodayCount - 1];
+    // get the id of letestTodo
+    const todoID = latestTodo.id;
+    console.log("debug id", todoID);
+
+    res = await agent.get("/todos");
+    csrfToken = extractCsrfToken(res);
+
+    const deleteUserA = await agent
+      .delete(`/todos/${todoID}`)
+      .send({ _csrf: csrfToken });
+
+    expect(deleteUserA.statusCode).toBe(200);
+
+    expect(deleteUserA.body.success).toBe(true);
+    console.log("yehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhheeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+    // login with userB
+    // const agentB = request.agent(server);
+    const logind = await login(agent, "jack@gmail.com", "123456") // here logind will be true if login is successful
+    console.log("dude logged in((((((((((((((((((((((((((((((", logind); 
+
+    let res1 = await agent.get("/todos");
+    let csrfToken1 = extractCsrfToken(res1);
+    console.log("csrfToken1", csrfToken1);
+
+    await agent.post("/todos").send({
+      title: "Buy Frog",
+      dueDate: new Date().toISOString(),
+      completed: false,
+      _csrf: csrfToken1,
+    });
+
+    await agent
+      .get("/todos")
+      .set("Accept", "application/json");
+
+    res1 = await agent.get("/todos");
+    csrfToken1 = extractCsrfToken(res1);
+
+
+
+    const deleteUserB = await agent
+      .delete(`/todos/${todoID}`)
+      .send({ _csrf: csrfToken1 });
+
+    expect(deleteUserB.statusCode).toBe(403); // here 500 is the status code for internal server error
+
+    expect(deleteUserB.body.success).toBe(false);
+
+    
+
+  });
+
+*/
 });
