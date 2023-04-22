@@ -17,7 +17,7 @@
     <div class="grid grid-cols-6">
     
         <div class="col-start-3 col-span-2">
-            <%- include ('header.ejs') %>
+            <a href="/"><%- include ('header.ejs') %></a>
             <h6 class="py-4">Login</h6>
             <% if(messages && messages.error && messages.error.length > 0)  { %>
                 <% for(var i=0; i<messages.error.length; i++) { %>

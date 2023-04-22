@@ -55,10 +55,10 @@
     <div class="grid grid-cols-6">
 
         <div class="col-start-3 col-span-2">
-            <%- include ('header.ejs') %>
+            <a href="/"><%- include ('header.ejs') %></a>
 
             <!--wellcome message-->
-            <h1 class="text-2xl font-bold text-green-400">Welcome <%= user.firstName %></h1>
+            <h1 class="text-2xl font-bold text-green-400">Hello, <%= user.firstName %>! Welcome.</h1>
             
                 <form action="/todos" method="post">
 

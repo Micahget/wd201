@@ -8,9 +8,8 @@ const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path"); // here we are using path module to get the path of the public folder
 // to render files from the public folder
-app.set("views", path.join(__dirname, "views")); // this is the path to the views folder. i need it 
+app.set("views", path.join(__dirname, "views")); // this is the path to the views folder. i need it
 app.use(express.static(path.join(__dirname, "public"))); // here we are using path module to get the path of the public folder
-
 
 // import authentication middlewares
 const passport = require("passport");
@@ -18,20 +17,17 @@ const session = require("express-session");
 const connectEnsureLogin = require("connect-ensure-login");
 const LocalStrategy = require("passport-local").Strategy;
 
-// password encryption 
+// password encryption
 const bcrypt = require("bcrypt");
 
 // connect flash message
 const flash = require("connect-flash");
 app.use(flash());
 
-
-
 const saltRounds = 10;
 app.use(bodyParser.json());
 
-
-app.use(express.urlencoded({ extended: false })); // 
+app.use(express.urlencoded({ extended: false })); //
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
@@ -46,13 +42,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
 // set the view engine to ejs
 app.set("view engine", "ejs");
 
-
-app.use(function(request, response, next) {
+app.use(function (request, response, next) {
   response.locals.messages = request.flash();
   next();
 });
@@ -80,8 +73,8 @@ passport.use(
     }));
     
   */
- // my local strategy code 
- passport.use(
+// my local strategy code
+passport.use(
   new LocalStrategy(
     {
       usernameField: "email",
@@ -117,14 +110,15 @@ passport.serializeUser((user, done) => {
 
 // tell passport how to deserialize the user
 passport.deserializeUser((id, done) => {
-  User.findByPk(id).then((user) => {
-    console.log("deserializing user in session ", user.id);
-    done(null, user);
-  }).catch((error) => {
-    done(error, null);
-  });
+  User.findByPk(id)
+    .then((user) => {
+      console.log("deserializing user in session ", user.id);
+      done(null, user);
+    })
+    .catch((error) => {
+      done(error, null);
+    });
 });
-
 
 // this is root route and it is public
 app.get("/", async (request, response) => {
@@ -132,41 +126,41 @@ app.get("/", async (request, response) => {
     title: "Todo Application",
     csrfToken: request.csrfToken(),
   });
-  
 });
 
+app.get(
+  "/todos",
+  connectEnsureLogin.ensureLoggedIn(),
+  async function (request, response) {
+    const userId = request.user.id;
+    const overdue = await Todo.overdue(userId);
+    const dueToday = await Todo.dueToday(userId);
+    const dueLater = await Todo.dueLater(userId);
+    const completedItem = await Todo.completedItem(userId);
+    // give the details of the user to the view
+    const user = request.user;
 
-app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-  const userId = request.user.id;
-  const overdue = await Todo.overdue(userId);
-  const dueToday = await Todo.dueToday(userId);
-  const dueLater = await Todo.dueLater(userId);
-  const completedItem = await Todo.completedItem(userId);
-  // give the details of the user to the view
-  const user = request.user;
-
-  if (request.accepts("html")) {
-    response.render("todos", {
-      title: "Todo Application",
-      overdue,
-      dueToday,
-      dueLater,
-      completedItem,
-      csrfToken: request.csrfToken(),
-      user,
-    });
-  } else {
-    response.json({
-      overdue,
-      dueToday,
-      dueLater,
-      completedItem,
-      user
-    });
+    if (request.accepts("html")) {
+      response.render("todos", {
+        title: "Todo Application",
+        overdue,
+        dueToday,
+        dueLater,
+        completedItem,
+        csrfToken: request.csrfToken(),
+        user,
+      });
+    } else {
+      response.json({
+        overdue,
+        dueToday,
+        dueLater,
+        completedItem,
+        user,
+      });
+    }
   }
-});
-
-
+);
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
@@ -183,7 +177,6 @@ app.get("/todos", async function (_request, response) {
   // response.send(todos)
 });
 
-
 app.get("/todos/:id", async function (request, response) {
   try {
     const todo = await Todo.findByPk(request.params.id);
@@ -196,7 +189,10 @@ app.get("/todos/:id", async function (request, response) {
 
 // render the login page
 app.get("/signup", function (request, response) {
-  response.render("signup", { title: "Signup", csrfToken: request.csrfToken() });
+  response.render("signup", {
+    title: "Signup",
+    csrfToken: request.csrfToken(),
+  });
 });
 
 // render the users page
@@ -208,8 +204,8 @@ app.get("/users", function (request, response) {
 app.post("/users", async function (request, response) {
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
   const { firstName, email, password } = request.body;
-  if(!firstName ||  !email || !password) {
-    request. flash("error", "Please fill all the fields");
+  if (!firstName || !email || !password) {
+    request.flash("error", "Please fill all the fields");
     return response.redirect("/users");
   }
   // check the database if the user already exists
@@ -224,7 +220,6 @@ app.post("/users", async function (request, response) {
       lastName: request.body.lastName,
       email: request.body.email,
       password: hashedPwd,
-
     });
     // here we should initialize the session
     request.login(user, (error) => {
@@ -233,7 +228,7 @@ app.post("/users", async function (request, response) {
         return response.status(422).json(error);
       }
       return response.redirect("/todos");
-    })
+    });
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -242,54 +237,69 @@ app.post("/users", async function (request, response) {
 
 // render the login page
 app.get("/login", function (request, response) {
-  response.render("login", { title: "Login", csrfToken: request.csrfToken() }); // here the title is located in the login.ejs file  
+  response.render("login", { title: "Login", csrfToken: request.csrfToken() }); // here the title is located in the login.ejs file
 });
 
 // creating session route to render the login.ejs file
-app.post("/session", passport.authenticate('local', {
-  failureRedirect: "/login",
-  failureFlash: true,
-}), (request, response) => {
-  response.redirect("/todos");
-});
+app.post(
+  "/session",
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  (request, response) => {
+    response.redirect("/todos");
+  }
+);
 
 // creating logout route to render the login.ejs file
 app.get("/signout", (request, response, next) => {
-  request.logout((error) => { //logout is a method provided by passport
-    if (error) { return next(error); }
+  request.logout((error) => {
+    //logout is a method provided by passport
+    if (error) {
+      return next(error);
+    }
     return response.redirect("/"); // redirect to the landing page
   });
 });
 
-
 // this method is used to create a new todo
-app.post("/todos", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
-  console.log("Processing new Todo ...", request.user);
-  const { title, dueDate } = request.body;
-  if(!title || title.length < 5 ) {
-    request.flash("error", "Todo title must be at least 5 characters");
-    return response.redirect("/todos");
-  }else if(!dueDate) {
-    request.flash("error", "Please enter due date");
-    return response.redirect("/todos");
+app.post(
+  "/todos",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    console.log("Processing new Todo ...", request.user);
+    const { title, dueDate } = request.body;
+    if (!title || title.length < 5) {
+      request.flash("error", "Todo title must be at least 5 characters");
+      return response.redirect("/todos");
+    } else if (!dueDate) {
+      request.flash("error", "Please enter due date");
+      return response.redirect("/todos");
+    }
+    try {
+      await Todo.addTodo({
+        title: request.body.title,
+        dueDate: request.body.dueDate,
+        userId: request.user.id,
+      });
+      return response.redirect("/todos");
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+    }
   }
-  try {
-    await Todo.addTodo({
-      title: request.body.title,
-      dueDate: request.body.dueDate,
-      userId: request.user.id,
-    });
-    return response.redirect("/todos");
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-
+);
 
 app.put("/todos/:id", async function (request, response) {
+  // const todo = await Todo.findByPk(request.params.id);
   const todo = await Todo.findByPk(request.params.id);
   try {
+    if (todo.userId !== request.user.id) {
+      // if the user is not authorized to update the todo, return a 401 Unauthorized response
+      return response.status(401).send("Unauthorized");
+    }
+
     // get the value of completed in /todos/:id/completed
     const completed = request.body.completed;
     const updatedTodo = await todo.setCompletionStatus(completed);
@@ -303,8 +313,16 @@ app.put("/todos/:id", async function (request, response) {
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
   const userId = request.user.id;
-  // FILL IN YOUR CODE HERE
+
+  const todo = await Todo.findByPk(request.params.id);
   try {
+    if (request.user.id !== todo.UserId) {
+      // if the user is not authorized to delete the todo, return a 401 Unauthorized response
+      // success = false;
+
+      return response.status(401).send({ message: "Unauthorized" });
+    }
+    // FILL IN YOUR CODE HERE
     await Todo.remove(request.params.id, userId);
     return response.json({ success: true });
   } catch (error) {
