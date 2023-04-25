@@ -294,10 +294,10 @@ app.post(
 app.put("/todos/:id", async function (request, response) {
   // const todo = await Todo.findByPk(request.params.id);
   const todo = await Todo.findByPk(request.params.id);
+  const deletedUserId = todo.userId; // this is the user id of the todo that we want to delete
   try {
-    if (todo.userId !== request.user.id) {
-      // if the user is not authorized to update the todo, return a 401 Unauthorized response
-      return response.status(401).send("Unauthorized");
+    if (request.user.id !== deletedUserId) {
+      return response.status(401).send({ message: "Unauthorized" });
     }
 
     // get the value of completed in /todos/:id/completed
@@ -312,14 +312,15 @@ app.put("/todos/:id", async function (request, response) {
 
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
-  const userId = request.user.id;
+  const userId = request.user.id; // this is the user id of the logged in user
 
   const todo = await Todo.findByPk(request.params.id);
+  const deletedUserId = todo.userId; // this is the user id of the todo that we want to delete
+  console.log("#######delete", deletedUserId);
+  console.log("#######logged user", request.user.id);
+  console.log("#######todo id", request.params.id);
   try {
-    if (request.user.id !== todo.UserId) {
-      // if the user is not authorized to delete the todo, return a 401 Unauthorized response
-      // success = false;
-
+    if (request.user.id !== deletedUserId) {
       return response.status(401).send({ message: "Unauthorized" });
     }
     // FILL IN YOUR CODE HERE

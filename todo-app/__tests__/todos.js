@@ -144,12 +144,12 @@ describe("Todo Application", function () {
 
     expect(parsedMarkCompleteResponse.completed).toBe(true);
   });
-  /*
+
   // test to check if the item is unmarked
   test("Marks a todo with the given ID as incomplete", async () => {
     // authenticate user before testing
     const agent = request.agent(server);
-    await login(agent, "doe@gmail.com", "12345")
+    await login(agent, "doe@gmail.com", "12345");
 
     let res = await agent.get("/todos"); //here we are getting the csrf token
     let csrfToken = extractCsrfToken(res);
@@ -186,7 +186,7 @@ describe("Todo Application", function () {
   test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
     // authenticate user before testing
     const agent = request.agent(server);
-    await login(agent, "doe@gmail.com", "12345")
+    await login(agent, "doe@gmail.com", "12345");
 
     let res = await agent.get("/todos");
     let csrfToken = extractCsrfToken(res);
@@ -221,7 +221,6 @@ describe("Todo Application", function () {
     );
     expect(deleteResponse.body.success).toBe(true);
   });
-*/
 
   // test to verify userA can't update userB's todo
   test("User A cannot update User B's todo", async () => {
