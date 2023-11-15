@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static addTodo({ title, dueDate, userId }) {
+    static addTodo({ title, dueDateTime, userId }) {
       return this.create({
         title: title,
-        dueDate: dueDate,
+        dueDateTime: dueDateTime,
         completed: false,
         userId,
       });
@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
     static overdue(userId) {
       return this.findAll({
         where: {
-          dueDate: {
+          dueDateTime: {
             [Op.lt]: new Date(),
           },
           userId,
@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
     static dueToday(userId) {
       return this.findAll({
         where: {
-          dueDate: {
+          dueDateTime: {
             [Op.eq]: new Date(),
           },
           userId,
@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
     static dueLater(userId) {
       return this.findAll({
         where: {
-          dueDate: {
+          dueDateTime: {
             [Op.gt]: new Date(),
           },
           userId,
@@ -101,8 +101,8 @@ module.exports = (sequelize, DataTypes) => {
           len: 5,
         },
       },
-      dueDate: {
-        type: DataTypes.DATEONLY,
+      dueDateTime: {
+        type: DataTypes.DATE,
         allowNull: false,
       },
       completed: DataTypes.BOOLEAN,

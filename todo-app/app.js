@@ -269,18 +269,19 @@ app.post(
   connectEnsureLogin.ensureLoggedIn(),
   async (request, response) => {
     console.log("Processing new Todo ...", request.user);
-    const { title, dueDate } = request.body;
+    const { title, dueDateTime } = request.body;
+    console.log("dueDateTime", dueDateTime)
     if (!title || title.length < 5) {
       request.flash("error", "Todo title must be at least 5 characters");
       return response.redirect("/todos");
-    } else if (!dueDate) {
+    } else if (!dueDateTime) {
       request.flash("error", "Please enter due date");
       return response.redirect("/todos");
     }
     try {
       await Todo.addTodo({
         title: request.body.title,
-        dueDate: request.body.dueDate,
+        dueDateTime: request.body.dueDateTime,
         userId: request.user.id,
       });
       return response.redirect("/todos");
